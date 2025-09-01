@@ -1,0 +1,96 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+/coverage/
+.phpunit.result.cache
+
+# Composer
+composer.lock
+composer.phar
+
+# Local development
+.phpunit.cache
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+# Build and deployment
+/build/
+/dist/
+
+# IDE specific files
+*.sublime-*
+*.sublime-project
+*.sublime-workspace
+
+# Local development
+.php-cs-fixer.cache
+.phpunit.cache
+.phpunit.result.cache
+
+# Debug logs
+*.log
+*.log.*
+
+# Local development environment
+.php-version
+.php-version.*
+
+# PHPUnit
+/phpunit.xml
+.phpunit.*
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-*
+*.sublime-project
+*.sublime-workspace
+
+# Local development
+.env.local
+.env.*.local
+
+# Testing
+/coverage/
+
+# Composer
+composer.phar
+composer.lock
+
+# Local development
+.phpunit.cache
+.phpunit.result.cache
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-*
+*.sublime-project
+*.sublime-workspace
+
+# Local development
+.php-cs-fixer.cache
+.phpunit.cache
+.phpunit.result.cache
