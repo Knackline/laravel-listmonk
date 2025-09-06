@@ -18,7 +18,7 @@ A Laravel package to interact with the Listmonk API, providing a fluent interfac
 ## Requirements
 
 - PHP 8.0 or higher
-- Laravel 9.x or 10.x
+- Laravel 9.x or higher
 - Listmonk 2.0 or higher
 
 ## Installation
