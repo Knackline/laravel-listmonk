@@ -39,23 +39,22 @@ class ListmonkClient
     public function __construct(string $baseUrl, string $username, string $password, int $timeout = 30)
     {
         $this->baseUrl = rtrim($baseUrl, '/');
-        
-        $this->client = Http::withBasicAuth($username, $password)
+
+        $this->client = Http::withHeaders([
+            'Authorization' => 'token ' . $username . ':' . $password,
+            'Content-Type' => 'application/json',
+            'User-Agent' => 'knackline/laravel-listmonk',
+        ])
             ->baseUrl($this->baseUrl . '/api')
             ->timeout($timeout)
-            ->acceptJson()
-            ->withHeaders([
-                'Content-Type' => 'application/json',
-                'User-Agent' => 'knackline/laravel-listmonk',
-            ]);
+            ->acceptJson();
     }
 
     protected function httpClient(): PendingRequest
     {
-        return Http::withBasicAuth(
-            config('listmonk.username'),
-            config('listmonk.password')
-        )->baseUrl(rtrim(config('listmonk.url'), '/'));
+        return Http::withHeaders([
+            'Authorization' => 'token ' . config('listmonk.username') . ':' . config('listmonk.password'),
+        ])->baseUrl(rtrim(config('listmonk.base_url'), '/'));
     }
 
     /*
@@ -219,11 +218,11 @@ class ListmonkClient
     public function getSubscriber(int $id): ?SubscriberResponseDTO
     {
         $response = $this->client->get("/subscribers/{$id}");
-        
+
         if ($response->successful()) {
             return new SubscriberResponseDTO($response->json('data'));
         }
-        
+
         return null;
     }
 
@@ -347,11 +346,11 @@ class ListmonkClient
     public function getList(int $id): ?ListResponseDTO
     {
         $response = $this->client->get("/lists/{$id}");
-        
+
         if ($response->successful()) {
             return new ListResponseDTO($response->json('data'));
         }
-        
+
         return null;
     }
 
@@ -364,11 +363,11 @@ class ListmonkClient
     public function createList(ListRequestDTO $list): ?ListResponseDTO
     {
         $response = $this->client->post('/lists', $list->toArray());
-        
+
         if ($response->successful()) {
             return new ListResponseDTO($response->json('data'));
         }
-        
+
         return null;
     }
 
@@ -382,11 +381,11 @@ class ListmonkClient
     public function updateList(int $id, ListRequestDTO $list): ?ListResponseDTO
     {
         $response = $this->client->put("/lists/{$id}", $list->toArray());
-        
+
         if ($response->successful()) {
             return new ListResponseDTO($response->json('data'));
         }
-        
+
         return null;
     }
 
@@ -428,11 +427,11 @@ class ListmonkClient
     public function getCampaign(int $id): ?array
     {
         $response = $this->client->get("/campaigns/{$id}");
-        
+
         if ($response->successful()) {
             return $response->json('data');
         }
-        
+
         return null;
     }
 
@@ -445,11 +444,11 @@ class ListmonkClient
     public function createCampaign(array $data): ?array
     {
         $response = $this->client->post('/campaigns', $data);
-        
+
         if ($response->successful()) {
             return $response->json('data');
         }
-        
+
         return null;
     }
 
@@ -463,11 +462,11 @@ class ListmonkClient
     public function updateCampaign(int $id, array $data): ?array
     {
         $response = $this->client->put("/campaigns/{$id}", $data);
-        
+
         if ($response->successful()) {
             return $response->json('data');
         }
-        
+
         return null;
     }
 
@@ -534,11 +533,11 @@ class ListmonkClient
     public function getTemplate(int $id): ?array
     {
         $response = $this->client->get("/templates/{$id}");
-        
+
         if ($response->successful()) {
             return $response->json('data');
         }
-        
+
         return null;
     }
 
@@ -551,11 +550,11 @@ class ListmonkClient
     public function createTemplate(array $data): ?array
     {
         $response = $this->client->post('/templates', $data);
-        
+
         if ($response->successful()) {
             return $response->json('data');
         }
-        
+
         return null;
     }
 
@@ -569,11 +568,11 @@ class ListmonkClient
     public function updateTemplate(int $id, array $data): ?array
     {
         $response = $this->client->put("/templates/{$id}", $data);
-        
+
         if ($response->successful()) {
             return $response->json('data');
         }
-        
+
         return null;
     }
 
@@ -609,11 +608,11 @@ class ListmonkClient
             file_get_contents($path),
             $filename ?? basename($path)
         )->post($this->baseUrl . '/api/media/upload');
-        
+
         if ($response->successful()) {
             return $response->json('data');
         }
-        
+
         return null;
     }
 
@@ -648,13 +647,13 @@ class ListmonkClient
             file_get_contents($filePath),
             basename($filePath)
         )->post($this->baseUrl . '/api/import/subscribers', [
-            'params' => json_encode($params),
-        ]);
-        
+                    'params' => json_encode($params),
+                ]);
+
         if ($response->successful()) {
             return $response->json('data', []);
         }
-        
+
         return [];
     }
 
@@ -705,13 +704,13 @@ class ListmonkClient
     public function deleteBounces(array $ids = []): bool
     {
         $params = [];
-        
+
         if (!empty($ids)) {
             $params['id'] = implode(',', $ids);
         } else {
             $params['all'] = true;
         }
-        
+
         return $this->client->delete('/bounces', $params)
             ->json('data', false) === true;
     }
@@ -743,7 +742,7 @@ class ListmonkClient
             'content_type' => $data['content_type'] ?? 'html',
             'messenger' => $data['messenger'] ?? 'email',
         ], $data));
-        
+
         return $response->successful();
     }
 
